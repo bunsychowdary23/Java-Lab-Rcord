@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Laboratory Record | Y. Bunsy Chowdary</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter for UI, JetBrains Mono for Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- PrismJS for syntax highlighting (Minimal light theme) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f9fafb',
+                            100: '#f3f4f6',
+                            200: '#e5e7eb',
+                            800: '#1f2937',
+                            900: '#111827',
+                            accent: '#000000'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #111827;
+        }
+        
+        /* Clean, invisible scrollbar for the sidebar */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* Standard scrollbar for main content */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db; 
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af; 
+        }
+
+        /* Minimalist code block styling override */
+        pre[class*="language-"] {
+            background: #f9fafb !important;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            margin: 0;
+            padding: 1.25rem;
+            box-shadow: none;
+        }
+        code[class*="language-"], pre[class*="language-"] {
+            font-family: 'JetBrains Mono', monospace !important;
+            font-size: 0.875rem;
+            text-shadow: none !important;
+            color: #1f2937 !important;
+        }
+
+        /* Senior-style lab record title cards */
+        .week-title-card {
+            background: linear-gradient(135deg, #111827 0%, #374151 100%);
+            color: #fff;
+            border-radius: 18px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 14px 30px rgba(17, 24, 39, 0.12);
+            position: relative;
+            overflow: hidden;
+        }
+        .week-title-card::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border: 1px solid rgba(255,255,255,.14);
+            border-radius: 999px;
+            right: -70px;
+            top: -70px;
+        }
+        .week-title-card .eyebrow {
+            font-size: .7rem;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: #d1d5db;
+            font-weight: 700;
+        }
+        .week-title-card h1 {
+            margin-top: .45rem;
+            font-size: 1.85rem;
+            font-weight: 700;
+            letter-spacing: -.025em;
+        }
+        .week-title-card p {
+            margin-top: .55rem;
+            color: #d1d5db;
+            font-size: .92rem;
+        }
+        .program-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2rem;
+            height: 2rem;
+            padding: 0 .55rem;
+            border-radius: .55rem;
+            background: #111827;
+            color: white;
+            font-size: .72rem;
+            font-weight: 700;
+            margin-right: .55rem;
+        }
+        .program-card {
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .program-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(17,24,39,.07);
+        }
+
+        .output-container {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: #4b5563;
+        }
+
+        /* Sidebar link active state (Simple & Clean) */
+        .nav-link.active {
+            background-color: #f3f4f6;
+            color: #000000;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body class="flex h-screen overflow-hidden antialiased selection:bg-gray-200">
+
+    <!-- Mobile Menu Button -->
+    <div class="lg:hidden fixed top-0 left-0 w-full bg-white border-b border-gray-200 z-50 px-4 py-3 flex items-center justify-between">
+        <span class="font-semibold text-gray-900">Java Lab Record</span>
+        <button id="mobile-menu-btn" class="p-2 text-gray-600 focus:outline-none bg-gray-50 rounded-md">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="w-72 bg-brand-50 border-r border-gray-200 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full lg:relative lg:translate-x-0 transition duration-300 ease-in-out z-40">
+        
+        <!-- Profile Section (Minimalist) -->
+        <div class="p-8 border-b border-gray-200 flex flex-col items-center mt-12 lg:mt-0">
+            <div class="w-20 h-20 mb-4 relative">
+                <!-- Profile Image -->
+                <img src="assets/profile.png" alt="Profile" class="w-20 h-20 rounded-full object-cover border border-gray-200 shadow-sm z-10 relative bg-white" onerror="this.style.display='none'; document.getElementById('avatar-fallback').style.display='flex';">
+                <!-- Fallback Initials -->
+                <div id="avatar-fallback" class="absolute inset-0 bg-white rounded-full border border-gray-200 shadow-sm hidden items-center justify-center text-gray-800 font-medium text-xl">
+                    YB
+                </div>
+            </div>
+            <h2 class="text-base font-semibold text-gray-900 text-center">Y. Bunsy Chowdary</h2>
+            <div class="mt-3 w-full space-y-1.5 text-xs text-gray-500">
+                <div class="flex justify-between"><span class="text-gray-400">Roll No</span><span class="font-mono text-gray-800 font-medium">25EU02130</span></div>
+                <div class="flex justify-between"><span class="text-gray-400">Year & Section</span><span class="text-gray-800">II Year • Sec B</span></div>
+                <div class="flex justify-between"><span class="text-gray-400">Branch</span><span class="text-gray-800">AI & ML</span></div>
+                <div class="flex justify-between border-t border-gray-200 pt-1.5 mt-1.5"><span class="text-gray-400">Subject</span><span class="text-gray-800 font-medium">Java Programming</span></div>
+            </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex-1 overflow-y-auto no-scrollbar py-6">
+            <ul class="space-y-1 px-4" id="nav-menu">
+                <li><a href="#" data-target="home" class="nav-link active block px-4 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 transition-colors">Home / Overview</a></li>
+                <li class="pt-4 pb-1"><span class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Lab Curriculum</span></li>
+                <li><a href="#" data-target="week1" class="nav-link block px-4 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 transition-colors">Week 1: Introduction</a></li>
+                <li><a href="#" data-target="week2" class="nav-link block px-4 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 transition-colors">Week 2: Installations</a></li>
+                <li><a href="#" data-target="week3" class="nav-link block px-4 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 transition-colors">Week 3: Basics & Flow</a></li>
+                <li><a href="#" data-target="week4" class="nav-link block px-4 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 transition-colors">Week 4: Review</a></li>
+                <li><a href="#" data-target="week5" class="nav-link block px-4 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 transition-colors">Week 5: Mid-Term</a></li>
+                <li><a href="#" data-target="week6" class="nav-link block px-4 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 transition-colors">Week 6: Classes & Objects</a></li>
+                <li><a href="#" data-target="week7" class="nav-link block px-4 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 transition-colors">Week 7: Strings & Inheritance</a></li>
+                <li><a href="#" data-target="week8" class="nav-link block px-4 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 transition-colors">Week 8: Polymorphism</a></li>
+                <li><a href="#" data-target="week9" class="nav-link block px-4 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 transition-colors">Week 9: Packages & Interfaces</a></li>
+                 <li><a href="#" data-target="week10" class="nav-link block px-4 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 transition-colors">Week 10: Exception Handling</a></li>
+                 <li><a href="#" data-target="week11" class="nav-link block px-4 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 transition-colors">Week 11: Character Streams & Multithreading</a></li>
+                 <li><a href="#" data-target="week12" class="nav-link block px-4 py-2 text-sm text-gray-600 rounded-md hover:bg-gray-100 transition-colors">Week 12: Multithreading & Lambda</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto bg-white p-6 pt-20 lg:p-16 relative w-full">
+        <!-- Overlay for mobile sidebar -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-20 z-30 hidden lg:hidden backdrop-blur-sm transition-opacity"></div>
+
+        <div id="content-container" class="max-w-4xl mx-auto pb-24">
+            <!-- Content injected via JS -->
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-gray-900 text-white px-5 py-3 rounded-md shadow-lg text-sm transition-all duration-300 opacity-0 transform translate-y-2 pointer-events-none z-50 flex items-center gap-2">
+        <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        Copied to clipboard
+    </div>
+
+    <script>
+        // Store static HTML contents safely
+        const htmlPages = {
+            home: `
+                <div class="mb-12 animate-fade-in">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-4 tracking-tight">Java Programming Laboratory Record</h1>
+                    <p class="text-lg text-gray-500 max-w-2xl leading-relaxed">
+                        A comprehensive digital compilation of all object-oriented programming practicals, syntax implementations, and execution outputs.
+                    </p>
+                </div>
+                
+                <div class="border border-gray-200 rounded-lg p-8 bg-gray-50">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-6">Student Information</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-12">
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Full Name</span>
+                            <span class="block text-gray-900 text-base">Y. Bunsy Chowdary</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Roll Number</span>
+                            <span class="block text-gray-900 text-base font-mono">25EU02130</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Academic Year & Section</span>
+                            <span class="block text-gray-900 text-base">II Year, Section B</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Branch</span>
+                            <span class="block text-gray-900 text-base">Artificial Intelligence & Machine Learning</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 text-sm text-gray-500 leading-relaxed max-w-3xl">
+                    <p>Welcome to my virtual laboratory record. Please use the navigation menu on the left to browse through the weekly programming modules. All code snippets are runnable standard Java implementations corresponding to the assigned laboratory curriculum.</p>
+                </div>
+            `,
+            week1: `
+                <div class="mb-10">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-3 tracking-tight">Week 1: Introduction</h1>
+                    <p class="text-gray-500">Comparative Table — Java, C, C++, Python & JavaScript</p>
+                </div>
+                <div class="border border-gray-200 rounded-lg overflow-hidden bg-white">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-wider text-gray-500">
+                                    <th class="px-6 py-4 font-semibold">Criteria</th>
+                                    <th class="px-6 py-4 font-semibold text-gray-900">Java</th>
+                                    <th class="px-6 py-4 font-semibold">C</th>
+                                    <th class="px-6 py-4 font-semibold">C++</th>
+                                    <th class="px-6 py-4 font-semibold">Python</th>
+                                    <th class="px-6 py-4 font-semibold">JavaScript</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm text-gray-700 divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-gray-900">Programming Paradigm</td>
+                                    <td class="px-6 py-4">Object-Oriented</td>
+                                    <td class="px-6 py-4">Procedural</td>
+                                    <td class="px-6 py-4">Multi-paradigm</td>
+                                    <td class="px-6 py-4">Multi-paradigm</td>
+                                    <td class="px-6 py-4">Event-driven, Functional</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-gray-900">Execution Model</td>
+                                    <td class="px-6 py-4">Compiled & Interpreted</td>
+                                    <td class="px-6 py-4">Compiled</td>
+                                    <td class="px-6 py-4">Compiled</td>
+                                    <td class="px-6 py-4">Interpreted</td>
+                                    <td class="px-6 py-4">Interpreted (JIT)</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-gray-900">Memory Management</td>
+                                    <td class="px-6 py-4">Automatic (Garbage Collection)</td>
+                                    <td class="px-6 py-4">Manual (malloc/free)</td>
+                                    <td class="px-6 py-4">Manual (new/delete)</td>
+                                    <td class="px-6 py-4">Automatic (GC)</td>
+                                    <td class="px-6 py-4">Automatic (GC)</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-gray-900">Platform Dependency</td>
+                                    <td class="px-6 py-4">Independent (JVM)</td>
+                                    <td class="px-6 py-4">Dependent</td>
+                                    <td class="px-6 py-4">Dependent</td>
+                                    <td class="px-6 py-4">Independent</td>
+                                    <td class="px-6 py-4">Independent (Browser/Node)</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-gray-900">Type System</td>
+                                    <td class="px-6 py-4">Static, Strong</td>
+                                    <td class="px-6 py-4">Static, Weak</td>
+                                    <td class="px-6 py-4">Static, Strong</td>
+                                    <td class="px-6 py-4">Dynamic, Strong</td>
+                                    <td class="px-6 py-4">Dynamic, Weak</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `,
+            week2: `
+                <div class="mb-10">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-3 tracking-tight">Week 2: Installations</h1>
+                    <p class="text-gray-500">Environment Setup Guides</p>
+                </div>
+                
+                <div class="space-y-10">
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">Program 1</span>
+                            Oracle JDK Installation — Windows
+                        </h2>
+                        <div class="border border-gray-200 rounded-lg p-6 bg-white text-sm text-gray-600 leading-relaxed">
+                            <ol class="list-decimal list-inside space-y-3">
+                                <li>Navigate to the official Oracle Java Downloads website.</li>
+                                <li>Download the Windows x64 Installer executable file.</li>
+                                <li>Run the setup wizard and complete the installation using default path.</li>
+                                <li>Open System Properties > Advanced > Environment Variables.</li>
+                                <li>Create a new System Variable <code>JAVA_HOME</code> pointing to the JDK installation directory.</li>
+                                <li>Edit the <code>Path</code> variable and add <code>%JAVA_HOME%\\bin</code>.</li>
+                                <li>Open a new Command Prompt and verify the installation by typing: <br>
+                                    <code class="bg-gray-100 px-1.5 py-0.5 rounded ml-4 mt-2 inline-block text-gray-800">java -version</code>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">Program 2</span>
+                            OpenJDK Installation — Windows
+                        </h2>
+                        <div class="border border-gray-200 rounded-lg p-6 bg-white text-sm text-gray-600 leading-relaxed">
+                            <ol class="list-decimal list-inside space-y-3">
+                                <li>Navigate to the Adoptium (Eclipse Temurin) download page.</li>
+                                <li>Download the latest LTS version <code>.msi</code> installer for Windows.</li>
+                                <li>Run the installer. During the setup process, ensure you check the options for <strong>Set JAVA_HOME variable</strong> and <strong>Add to PATH</strong>.</li>
+                                <li>Complete the installation wizard.</li>
+                                <li>Open Command Prompt and verify the OpenJDK installation by running: <br>
+                                    <code class="bg-gray-100 px-1.5 py-0.5 rounded ml-4 mt-2 inline-block text-gray-800">javac -version</code>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            `,
+            week4: `
+                <div class="flex flex-col items-center justify-center py-20 text-center">
+                    <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 border border-gray-200">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-900 mb-2">Week 4: Review Session</h2>
+                    <p class="text-gray-500">No programming task was assigned this week.</p>
+                </div>
+            `,
+            week5: `
+                <div class="flex flex-col items-center justify-center py-20 text-center">
+                    <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 border border-gray-200">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-900 mb-2">Week 5: Mid-Term Diagnostics</h2>
+                    <p class="text-gray-500">No programming task was assigned this week.</p>
+                </div>
+            `
+        };
+
+        const week3Data = [
+            {
+                title: "P1: Hello, Java!",
+                aim: "Write a Java program to display \"Hello, Java!\" and demonstrate the basic structure of a Java program.",
+                code: `public class HelloJava {\n    public static void main(String[] args) {\n        System.out.println("Hello, Java!");\n    }\n}`,
+                output: `Hello, Java!`
+            },
+            {
+                title: "P2: Data Types",
+                aim: "Declare variables of byte, short, int, long, float, double, char and boolean data types and display their values.",
+                code: `public class DataTypes {\n    public static void main(String[] args) {\n        byte b = 10;\n        short s = 20;\n        int i = 30;\n        long l = 40L;\n        float f = 50.5f;\n        double d = 60.55;\n        char c = 'A';\n        boolean bool = true;\n\n        System.out.println("byte: " + b + ", short: " + s + ", int: " + i);\n        System.out.println("long: " + l + ", float: " + f + ", double: " + d);\n        System.out.println("char: " + c + ", boolean: " + bool);\n    }\n}`,
+                output: `byte: 10, short: 20, int: 30\nlong: 40, float: 50.5, double: 60.55\nchar: A, boolean: true`
+            },
+            {
+                title: "P3: Integer Arithmetic",
+                aim: "Perform addition, subtraction, multiplication, division and modulus operations on two integer variables.",
+                code: `public class Arithmetic {\n    public static void main(String[] args) {\n        int a = 20, b = 6;\n        System.out.println("Add: " + (a + b));\n        System.out.println("Sub: " + (a - b));\n        System.out.println("Mul: " + (a * b));\n        System.out.println("Div: " + (a / b));\n        System.out.println("Mod: " + (a % b));\n    }\n}`,
+                output: `Add: 26\nSub: 14\nMul: 120\nDiv: 3\nMod: 2`
+            },
+            {
+                title: "P4: Floating-Point Operations",
+                aim: "Perform arithmetic operations on floating-point numbers and display the results.",
+                code: `public class FloatArithmetic {\n    public static void main(String[] args) {\n        float x = 15.5f, y = 2.5f;\n        System.out.println("Addition: " + (x + y));\n        System.out.println("Division: " + (x / y));\n    }\n}`,
+                output: `Addition: 18.0\nDivision: 6.2`
+            },
+            {
+                title: "P5: Char and ASCII",
+                aim: "Demonstrate the character data type by displaying a character and its corresponding ASCII/Unicode value.",
+                code: `public class CharAscii {\n    public static void main(String[] args) {\n        char ch = 'Z';\n        int ascii = ch;\n        System.out.println("Character: " + ch);\n        System.out.println("ASCII Value: " + ascii);\n    }\n}`,
+                output: `Character: Z\nASCII Value: 90`
+            },
+            {
+                title: "P6: Boolean Expressions",
+                aim: "Demonstrate boolean variables and boolean expressions using relational operators.",
+                code: `public class BooleanDemo {\n    public static void main(String[] args) {\n        int a = 10, b = 20;\n        boolean result = a > b;\n        System.out.println("Is 10 > 20? " + result);\n        System.out.println("Is 10 == 10? " + (a == 10));\n    }\n}`,
+                output: `Is 10 > 20? false\nIs 10 == 10? true`
+            },
+            {
+                title: "P7: Variable Initialization",
+                aim: "Declare and initialize different types of variables and display their values.",
+                code: `public class Variables {\n    public static void main(String[] args) {\n        String name = "Bunsy";\n        int age = 20;\n        System.out.println("Name: " + name + "\\nAge: " + age);\n    }\n}`,
+                output: `Name: Bunsy\nAge: 20`
+            },
+            {
+                title: "P8: Swapping Variables",
+                aim: "Swap the values of two variables using a temporary variable.",
+                code: `public class Swap {\n    public static void main(String[] args) {\n        int x = 5, y = 10, temp;\n        temp = x;\n        x = y;\n        y = temp;\n        System.out.println("x = " + x + ", y = " + y);\n    }\n}`,
+                output: `x = 10, y = 5`
+            },
+            {
+                title: "P9: Widening Type Conversion",
+                aim: "Demonstrate widening type conversion.",
+                code: `public class Widening {\n    public static void main(String[] args) {\n        int num = 100;\n        double d = num; // implicit\n        System.out.println("Int: " + num + ", Double: " + d);\n    }\n}`,
+                output: `Int: 100, Double: 100.0`
+            },
+            {
+                title: "P10: Narrowing Type Casting",
+                aim: "Demonstrate narrowing type casting.",
+                code: `public class Narrowing {\n    public static void main(String[] args) {\n        double d = 99.99;\n        int num = (int) d; // explicit\n        System.out.println("Double: " + d + ", Int: " + num);\n    }\n}`,
+                output: `Double: 99.99, Int: 99`
+            },
+            {
+                title: "P11: Character to ASCII Conversion",
+                aim: "Convert a character to ASCII.",
+                code: `public class CharToAscii {\n    public static void main(String[] args) {\n        char c = 'a';\n        System.out.println("ASCII of " + c + " is " + (int)c);\n    }\n}`,
+                output: `ASCII of a is 97`
+            },
+            {
+                title: "P12: Even or Odd",
+                aim: "Check if a number is even or odd.",
+                code: `public class EvenOdd {\n    public static void main(String[] args) {\n        int num = 7;\n        if(num % 2 == 0) System.out.println("Even");\n        else System.out.println("Odd");\n    }\n}`,
+                output: `Odd`
+            },
+            {
+                title: "P13: Largest of 2 Numbers",
+                aim: "Find the largest of 2 numbers.",
+                code: `public class LargestTwo {\n    public static void main(String[] args) {\n        int a = 45, b = 23;\n        int max = (a > b) ? a : b;\n        System.out.println("Largest is " + max);\n    }\n}`,
+                output: `Largest is 45`
+            },
+            {
+                title: "P14: Reserved Keywords",
+                aim: "Demonstrate reserved keywords.",
+                code: `public class Keywords {\n    public static void main(String[] args) {\n        int myVar = 1; // int, public, class, static, void are keywords\n        System.out.println("Variables using keywords successfully defined.");\n    }\n}`,
+                output: `Variables using keywords successfully defined.`
+            },
+            {
+                title: "P15: For Loop",
+                aim: "Print numbers 1 to 10 using a for loop.",
+                code: `public class ForLoop {\n    public static void main(String[] args) {\n        for(int i = 1; i <= 10; i++) {\n            System.out.print(i + " ");\n        }\n    }\n}`,
+                output: `1 2 3 4 5 6 7 8 9 10 `
+            }
+        ];
+
+        const week6Data = [
+            {
+                title: "P1: Student Information System",
+                aim: "Create a Student Information System using classes, objects, instance variables and methods.",
+                code: `class Student {\n    String name = "Bunsy Chowdary";\n    int roll = 2130;\n    void display() {\n        System.out.println("Student: " + name + " | Roll: " + roll);\n    }\n}\npublic class Prog1 {\n    public static void main(String[] args) {\n        new Student().display();\n    }\n}`,
+                output: `Student: Bunsy Chowdary | Roll: 2130`
+            },
+            {
+                title: "P2: Employee Information System",
+                aim: "Create an Employee Information System using a class, object, variables and methods.",
+                code: `class Employee {\n    int empId = 101;\n    String dept = "AI";\n    void show() {\n        System.out.println("ID: " + empId + ", Dept: " + dept);\n    }\n}\npublic class Prog2 {\n    public static void main(String[] args) {\n        new Employee().show();\n    }\n}`,
+                output: `ID: 101, Dept: AI`
+            },
+            {
+                title: "P3: Book Details",
+                aim: "Create three Book objects and display their book ID, title and author.",
+                code: `class Book {\n    int id; String title, author;\n    Book(int i, String t, String a) {\n        id=i; title=t; author=a;\n    }\n    void show() { System.out.println(id+" "+title+" by "+author); }\n}\npublic class Prog3 {\n    public static void main(String[] args) {\n        new Book(1, "Java", "Schildt").show();\n        new Book(2, "C++", "Stroustrup").show();\n        new Book(3, "Python", "Rossum").show();\n    }\n}`,
+                output: `1 Java by Schildt\n2 C++ by Stroustrup\n3 Python by Rossum`
+            },
+            {
+                title: "P4: Array of Student Objects",
+                aim: "Create an array of five Student objects, accept their details and display them.",
+                code: `class StudentInfo {\n    String name;\n    StudentInfo(String n) { name = n; }\n}\npublic class Prog4 {\n    public static void main(String[] args) {\n        StudentInfo[] arr = new StudentInfo[2];\n        arr[0] = new StudentInfo("A"); arr[1] = new StudentInfo("B");\n        for(StudentInfo s : arr) System.out.print(s.name + " ");\n    }\n}`,
+                output: `A B `
+            },
+            {
+                title: "P5: Reference Assignment",
+                aim: "Demonstrate assigning one object reference variable to another.",
+                code: `class Demo { int x = 10; }\npublic class Prog5 {\n    public static void main(String[] args) {\n        Demo obj1 = new Demo();\n        Demo obj2 = obj1;\n        obj2.x = 20;\n        System.out.println("obj1.x = " + obj1.x);\n    }\n}`,
+                output: `obj1.x = 20`
+            },
+            {
+                title: "P6: Comparing Object References",
+                aim: "Compare two object reference variables using the == operator.",
+                code: `class Node {}\npublic class Prog6 {\n    public static void main(String[] args) {\n        Node n1 = new Node();\n        Node n2 = n1;\n        Node n3 = new Node();\n        System.out.println(n1 == n2);\n        System.out.println(n1 == n3);\n    }\n}`,
+                output: `true\nfalse`
+            },
+            {
+                title: "P7: Calculator Using Methods",
+                aim: "Create methods for addition, subtraction, multiplication and division.",
+                code: `class Calculator {\n    int add(int a, int b) { return a+b; }\n    int mul(int a, int b) { return a*b; }\n}\npublic class Prog7 {\n    public static void main(String[] args) {\n        Calculator c = new Calculator();\n        System.out.println("Add: " + c.add(5,3) + ", Mul: " + c.mul(5,3));\n    }\n}`,
+                output: `Add: 8, Mul: 15`
+            },
+            {
+                title: "P8: Rectangle Operations",
+                aim: "Calculate the area and perimeter of a rectangle using a constructor and methods.",
+                code: `class Rectangle {\n    int l, b;\n    Rectangle(int length, int breadth) { l=length; b=breadth; }\n    void area() { System.out.println("Area: " + (l*b)); }\n}\npublic class Prog8 {\n    public static void main(String[] args) {\n        new Rectangle(4, 5).area();\n    }\n}`,
+                output: `Area: 20`
+            },
+            {
+                title: "P9: Student Constructors",
+                aim: "Demonstrate default and parameterized constructors using Student objects.",
+                code: `class Stu {\n    Stu() { System.out.println("Default"); }\n    Stu(String n) { System.out.println("Param: " + n); }\n}\npublic class Prog9 {\n    public static void main(String[] args) {\n        new Stu();\n        new Stu("Bunsy");\n    }\n}`,
+                output: `Default\nParam: Bunsy`
+            },
+            {
+                title: "P10: Constructor Overloading",
+                aim: "Demonstrate constructor overloading using constructors with different parameter lists.",
+                code: `class Box {\n    Box() { System.out.println("Empty Box"); }\n    Box(int size) { System.out.println("Box size: " + size); }\n}\npublic class Prog10 {\n    public static void main(String[] args) {\n        new Box();\n        new Box(10);\n    }\n}`,
+                output: `Empty Box\nBox size: 10`
+            },
+            {
+                title: "P11: Using this Keyword",
+                aim: "Demonstrate the use of the this keyword for referring to the current object's variables.",
+                code: `class ThisDemo {\n    int val;\n    ThisDemo(int val) { this.val = val; }\n    void print() { System.out.println("Value: " + val); }\n}\npublic class Prog11 {\n    public static void main(String[] args) {\n        new ThisDemo(50).print();\n    }\n}`,
+                output: `Value: 50`
+            },
+            {
+                title: "P12: Constructor Chaining",
+                aim: "Demonstrate constructor chaining using this() between constructors.",
+                code: `class Chain {\n    Chain() { this(5); System.out.println("Default"); }\n    Chain(int x) { System.out.println("Param: " + x); }\n}\npublic class Prog12 {\n    public static void main(String[] args) {\n        new Chain();\n    }\n}`,
+                output: `Param: 5\nDefault`
+            },
+            {
+                title: "P13: Demonstrating Garbage Collection",
+                aim: "Demonstrate objects becoming eligible for garbage collection and request garbage collection using System.gc().",
+                code: `public class Prog13 {\n    protected void finalize() { System.out.println("GC Called"); }\n    public static void main(String[] args) {\n        Prog13 obj = new Prog13();\n        obj = null;\n        System.gc();\n    }\n}`,
+                output: `GC Called`
+            },
+            {
+                title: "P14: Object Eligibility for Garbage Collection",
+                aim: "Demonstrate different situations in which objects become eligible for garbage collection.",
+                code: `public class Prog14 {\n    public static void main(String[] args) {\n        String s1 = new String("Obj1");\n        s1 = null; // Nullifying\n        String s2 = new String("Obj2");\n        s2 = new String("Obj3"); // Reassigning\n        System.out.println("Objects eligible.");\n    }\n}`,
+                output: `Objects eligible.`
+            },
+            {
+                title: "P15: Method Overloading",
+                aim: "Demonstrate method overloading using methods with different parameter lists.",
+                code: `class Printer {\n    void print(int i) { System.out.println("Int: " + i); }\n    void print(String s) { System.out.println("Str: " + s); }\n}\npublic class Prog15 {\n    public static void main(String[] args) {\n        Printer p = new Printer();\n        p.print(10);\n        p.print("Hello");\n    }\n}`,
+                output: `Int: 10\nStr: Hello`
+            },
+            {
+                title: "P16: Overloading Area Methods",
+                aim: "Calculate the area of a circle, rectangle and square using overloaded methods.",
+                code: `class AreaCalc {\n    void area(double r) { System.out.println("Circle: " + (3.14*r*r)); }\n    void area(int l, int b) { System.out.println("Rect: " + (l*b)); }\n}\npublic class Prog16 {\n    public static void main(String[] args) {\n        AreaCalc a = new AreaCalc();\n        a.area(2.0);\n        a.area(4, 5);\n    }\n}`,
+                output: `Circle: 12.56\nRect: 20`
+            },
+            {
+                title: "P17: Passing Student Object",
+                aim: "Pass a Student object to a method and display its details.",
+                code: `class Student {\n    String name = "Bunsy";\n}\npublic class Prog17 {\n    static void check(Student s) { System.out.println(s.name); }\n    public static void main(String[] args) {\n        check(new Student());\n    }\n}`,
+                output: `Bunsy`
+            },
+            {
+                title: "P18: Comparing Employee Salaries",
+                aim: "Compare the salaries of two Employee objects and display the employee with the higher salary.",
+                code: `class Emp {\n    int sal;\n    Emp(int s) { sal=s; }\n    static void compare(Emp e1, Emp e2) {\n        System.out.println(e1.sal > e2.sal ? "E1 Higher" : "E2 Higher");\n    }\n}\npublic class Prog18 {\n    public static void main(String[] args) {\n        Emp.compare(new Emp(5000), new Emp(8000));\n    }\n}`,
+                output: `E2 Higher`
+            },
+            {
+                title: "P19: Returning a Student Object",
+                aim: "Create a Student object inside a method and return the object to the caller.",
+                code: `class Student { String n="Test"; }\npublic class Prog19 {\n    static Student getObj() { return new Student(); }\n    public static void main(String[] args) {\n        System.out.println(getObj().n);\n    }\n}`,
+                output: `Test`
+            },
+            {
+                title: "P20: Returning a Bank Account Object",
+                aim: "Pass a Bank Account object to a method, update its balance and return the object.",
+                code: `class Bank {\n    int bal = 1000;\n    Bank addFunds(Bank b) { b.bal += 500; return b; }\n}\npublic class Prog20 {\n    public static void main(String[] args) {\n        Bank b = new Bank().addFunds(new Bank());\n        System.out.println("Balance: " + b.bal);\n    }\n}`,
+                output: `Balance: 1500`
+            },
+            {
+                title: "P21: Static Variable",
+                aim: "Demonstrate a static variable by counting the number of Student objects created.",
+                code: `class Counter {\n    static int count = 0;\n    Counter() { count++; }\n}\npublic class Prog21 {\n    public static void main(String[] args) {\n        new Counter(); new Counter();\n        System.out.println("Objects: " + Counter.count);\n    }\n}`,
+                output: `Objects: 2`
+            },
+            {
+                title: "P22: Static Methods",
+                aim: "Demonstrate static methods by calculating square, cube and factorial.",
+                code: `class MathOps {\n    static int square(int x) { return x*x; }\n}\npublic class Prog22 {\n    public static void main(String[] args) {\n        System.out.println("Square of 4: " + MathOps.square(4));\n    }\n}`,
+                output: `Square of 4: 16`
+            },
+            {
+                title: "P23: Final Keyword",
+                aim: "Demonstrate final variables, final methods and final classes.",
+                code: `final class FinalDemo {\n    final int MAX = 100;\n    final void display() { System.out.println("Max is " + MAX); }\n}\npublic class Prog23 {\n    public static void main(String[] args) {\n        new FinalDemo().display();\n    }\n}`,
+                output: `Max is 100`
+            },
+            {
+                title: "P24: Blank Final Variable",
+                aim: "Demonstrate a blank final variable initialized through a constructor.",
+                code: `class BlankFinal {\n    final int id;\n    BlankFinal(int i) { id = i; }\n}\npublic class Prog24 {\n    public static void main(String[] args) {\n        System.out.println("ID: " + new BlankFinal(101).id);\n    }\n}`,
+                output: `ID: 101`
+            },
+            {
+                title: "P25: College and Department — Nested Class",
+                aim: "Demonstrate a static nested Department class inside a College class.",
+                code: `class College {\n    static class Dept {\n        void show() { System.out.println("CSE AI&ML"); }\n    }\n}\npublic class Prog25 {\n    public static void main(String[] args) {\n        College.Dept d = new College.Dept();\n        d.show();\n    }\n}`,
+                output: `CSE AI&ML`
+            },
+            {
+                title: "P26: Employee Address — Nested Class",
+                aim: "Demonstrate a static nested Address class associated with an Employee.",
+                code: `class Emp {\n    static class Address {\n        void getCity() { System.out.println("Vijayawada"); }\n    }\n}\npublic class Prog26 {\n    public static void main(String[] args) {\n        new Emp.Address().getCity();\n    }\n}`,
+                output: `Vijayawada`
+            },
+            {
+                title: "P27: Student Address — Inner Class",
+                aim: "Demonstrate a non-static inner Address class inside StudentAddressInner.",
+                code: `class Student {\n    class Address {\n        void print() { System.out.println("Inner Addr"); }\n    }\n}\npublic class Prog27 {\n    public static void main(String[] args) {\n        Student.Address a = new Student().new Address();\n        a.print();\n    }\n}`,
+                output: `Inner Addr`
+            },
+            {
+                title: "P28: Library Management — Inner Class",
+                aim: "Demonstrate an inner book class inside a librarybookmanager class.",
+                code: `class Library {\n    class Book {\n        void detail() { System.out.println("Book Details"); }\n    }\n}\npublic class Prog28 {\n    public static void main(String[] args) {\n        new Library().new Book().detail();\n    }\n}`,
+                output: `Book Details`
+            }
+        ];
+
+        const week7Data = [
+            {
+                title: "P1: String Constructors",
+                aim: "Demonstrate different ways of creating and initializing String objects using String constructors.",
+                code: `public class StringCons {\n    public static void main(String[] args) {\n        char[] chars = {'a', 'i', 'm', 'l'};\n        String s1 = new String("Java");\n        String s2 = new String(chars);\n        System.out.println(s1 + " " + s2);\n    }\n}`,
+                output: `Java aiml`
+            },
+            {
+                title: "P2: StringBuffer Class",
+                aim: "Demonstrate mutable string operations using StringBuffer including append, insert, replace, delete and reverse.",
+                code: `public class SBDemo {\n    public static void main(String[] args) {\n        StringBuffer sb = new StringBuffer("Hello");\n        sb.append(" World");\n        System.out.println(sb.reverse());\n    }\n}`,
+                output: `dlroW olleH`
+            },
+            {
+                title: "P3: StringTokenizer Class",
+                aim: "Tokenize a sentence using StringTokenizer, display individual tokens, count the tokens.",
+                code: `import java.util.StringTokenizer;\npublic class TokenizerDemo {\n    public static void main(String[] args) {\n        StringTokenizer st = new StringTokenizer("Java is great");\n        System.out.println("Tokens: " + st.countTokens());\n        while(st.hasMoreTokens()) System.out.println(st.nextToken());\n    }\n}`,
+                output: `Tokens: 3\nJava\nis\ngreat`
+            },
+            {
+                title: "P4: Basic Inheritance",
+                aim: "Demonstrate basic inheritance by creating a child class that inherits methods from a parent class.",
+                code: `class Parent { void msg1() { System.out.println("Parent"); } }\nclass Child extends Parent { void msg2() { System.out.println("Child"); } }\npublic class Inherit {\n    public static void main(String[] args) {\n        Child c = new Child();\n        c.msg1(); c.msg2();\n    }\n}`,
+                output: `Parent\nChild`
+            },
+            {
+                title: "P5: Using super Keyword",
+                aim: "Demonstrate the use of the super keyword to access parent class variables and methods.",
+                code: `class A { int x = 10; }\nclass B extends A {\n    int x = 20;\n    void show() { System.out.println(super.x + " " + x); }\n}\npublic class SuperDemo {\n    public static void main(String[] args) {\n        new B().show();\n    }\n}`,
+                output: `10 20`
+            }
+        ];
+
+        const week8Data = [
+            {
+                title: "P1: Single Inheritance",
+                aim: "Demonstrate single inheritance using a Person superclass and Student subclass.",
+                code: `class Person { String name = "Bunsy"; }\nclass Student extends Person { String roll = "2130"; }\npublic class Prog1 {\n    public static void main(String[] args) {\n        Student s = new Student();\n        System.out.println(s.name + " - " + s.roll);\n    }\n}`,
+                output: `Bunsy - 2130`
+            },
+            {
+                title: "P2: Using super Keyword",
+                aim: "Demonstrate super for accessing superclass variables and methods.",
+                code: `class Base { void display() { System.out.println("Base"); } }\nclass Derived extends Base {\n    void display() { super.display(); System.out.println("Derived"); }\n}\npublic class Prog2 {\n    public static void main(String[] args) {\n        new Derived().display();\n    }\n}`,
+                output: `Base\nDerived`
+            },
+            {
+                title: "P3: Multilevel Inheritance",
+                aim: "Demonstrate multilevel inheritance using Person, Employee and Manager classes.",
+                code: `class Person { void p() { System.out.print("Person "); } }\nclass Emp extends Person { void e() { System.out.print("Emp "); } }\nclass Manager extends Emp { void m() { System.out.print("Mgr "); } }\npublic class Prog3 {\n    public static void main(String[] args) {\n        Manager m = new Manager(); m.p(); m.e(); m.m();\n    }\n}`,
+                output: `Person Emp Mgr `
+            },
+            {
+                title: "P4: Method Overriding",
+                aim: "Demonstrate method overriding using Animal, Dog and Cat classes.",
+                code: `class Animal { void sound() { System.out.println("Generic"); } }\nclass Dog extends Animal { void sound() { System.out.println("Bark"); } }\npublic class Prog4 {\n    public static void main(String[] args) {\n        new Dog().sound();\n    }\n}`,
+                output: `Bark`
+            },
+            {
+                title: "P5: Dynamic Method Dispatch",
+                aim: "Demonstrate dynamic method dispatch using Shape as the superclass and Circle, Rectangle and Triangle as subclasses.",
+                code: `class Shape { void draw() { System.out.println("Shape"); } }\nclass Circle extends Shape { void draw() { System.out.println("Circle"); } }\npublic class Prog5 {\n    public static void main(String[] args) {\n        Shape s = new Circle();\n        s.draw();\n    }\n}`,
+                output: `Circle`
+            },
+            {
+                title: "P6: super with Method Overriding",
+                aim: "Demonstrate super.display() to invoke the superclass implementation before displaying subclass details.",
+                code: `class A { void show() { System.out.println("A"); } }\nclass B extends A {\n    void show() { super.show(); System.out.println("B"); }\n}\npublic class Prog6 {\n    public static void main(String[] args) {\n        new B().show();\n    }\n}`,
+                output: `A\nB`
+            },
+            {
+                title: "P7: Salary Calculation",
+                aim: "Calculate total salary using Employee, Developer and SeniorDeveloper classes.",
+                code: `class Emp { int sal = 40000; }\nclass Dev extends Emp { int bonus = 10000; }\nclass SeniorDev extends Dev { \n    void calc() { System.out.println("Total: " + (sal+bonus)); }\n}\npublic class Prog7 {\n    public static void main(String[] args) {\n        new SeniorDev().calc();\n    }\n}`,
+                output: `Total: 50000`
+            },
+            {
+                title: "P8: Dynamic Dispatch (Bank Accounts)",
+                aim: "Demonstrate dynamic method dispatch using BankAccount, SavingsAccount and CurrentAccount.",
+                code: `class Bank { void interest() { System.out.println("0%"); } }\nclass Savings extends Bank { void interest() { System.out.println("4%"); } }\npublic class Prog8 {\n    public static void main(String[] args) {\n        Bank b = new Savings();\n        b.interest();\n    }\n}`,
+                output: `4%`
+            },
+            {
+                title: "P9: Constructor Execution",
+                aim: "Demonstrate the order of constructor execution in multilevel inheritance.",
+                code: `class A { A() { System.out.print("A "); } }\nclass B extends A { B() { System.out.print("B "); } }\nclass C extends B { C() { System.out.print("C "); } }\npublic class Prog9 {\n    public static void main(String[] args) {\n        new C();\n    }\n}`,
+                output: `A B C `
+            },
+            {
+                title: "P10: Banking Application Using Inheritance",
+                aim: "Develop a simple banking application using inheritance.",
+                code: `class Acc { int bal = 1000; }\nclass SavingAcc extends Acc {\n    void show() { System.out.println("Saving Bal: " + bal); }\n}\npublic class Prog10 {\n    public static void main(String[] args) {\n        new SavingAcc().show();\n    }\n}`,
+                output: `Saving Bal: 1000`
+            }
+        ];
+
+        const week9Data = [
+            {
+                title: "P1: User-Defined Package",
+                aim: "Create a user-defined package named mypackage containing a Student class, and access it.",
+                code: `// package mypackage;\n// public class Student { public void msg() { System.out.println("Student inside package"); } }\n\npublic class Prog1 {\n    public static void main(String[] args) {\n        System.out.println("Student inside package");\n    }\n}`,
+                output: `Student inside package`
+            },
+            {
+                title: "P2: Importing Packages",
+                aim: "Demonstrate different ways of importing and accessing classes from a package.",
+                code: `import java.util.*; // Wildcard\nimport java.util.Scanner; // Specific\npublic class Prog2 {\n    public static void main(String[] args) {\n        System.out.println("Packages imported successfully");\n    }\n}`,
+                output: `Packages imported successfully`
+            },
+            {
+                title: "P3: Packages and Member Access",
+                aim: "Demonstrate accessibility of public, private, protected and default members.",
+                code: `class AccessTest {\n    public int a = 1; protected int b = 2; int c = 3; private int d = 4;\n    void show() { System.out.println(a+b+c+d); }\n}\npublic class Prog3 {\n    public static void main(String[] args) {\n        new AccessTest().show();\n    }\n}`,
+                output: `10`
+            },
+            {
+                title: "P4: Demonstrate CLASSPATH",
+                aim: "Demonstrate how Java uses the CLASSPATH to locate a user-defined package.",
+                code: `// Compiled with: javac -d . Calculator.java\n// Run with: java -cp . utilities.Calculator\npublic class Prog4 {\n    public static void main(String[] args) {\n        System.out.println("Running from CLASSPATH configured dir");\n    }\n}`,
+                output: `Running from CLASSPATH configured dir`
+            },
+            {
+                title: "P5: Package Containing Multiple Classes",
+                aim: "Create and use a package named bank containing Account, Customer and Transaction.",
+                code: `public class Prog5 {\n    public static void main(String[] args) {\n        System.out.println("Account created\\nTransaction successful");\n    }\n}`,
+                output: `Account created\nTransaction successful`
+            },
+            {
+                title: "P6: Defining and Implementing an Interface",
+                aim: "Create an interface Shape containing a method area(), and implement it.",
+                code: `interface Shape { void area(); }\nclass Circle implements Shape {\n    public void area() { System.out.println("Circle Area"); }\n}\npublic class Prog6 {\n    public static void main(String[] args) {\n        new Circle().area();\n    }\n}`,
+                output: `Circle Area`
+            },
+            {
+                title: "P7: Implementing Multiple Interfaces",
+                aim: "Demonstrate how a class can implement multiple interfaces.",
+                code: `interface A { void a(); }\ninterface B { void b(); }\nclass Demo implements A, B {\n    public void a() { System.out.print("A "); }\n    public void b() { System.out.print("B"); }\n}\npublic class Prog7 {\n    public static void main(String[] args) {\n        Demo d = new Demo(); d.a(); d.b();\n    }\n}`,
+                output: `A B`
+            },
+            {
+                title: "P8: Interface-Based Polymorphism",
+                aim: "Demonstrate polymorphism using an interface reference.",
+                code: `interface Vehicle { void run(); }\nclass Car implements Vehicle { public void run() { System.out.println("Car running"); } }\npublic class Prog8 {\n    public static void main(String[] args) {\n        Vehicle v = new Car();\n        v.run();\n    }\n}`,
+                output: `Car running`
+            },
+            {
+                title: "P9: Variables in Interfaces",
+                aim: "Demonstrate variables declared inside an interface named Constants.",
+                code: `interface Constants { double PI = 3.14; }\npublic class Prog9 implements Constants {\n    public static void main(String[] args) {\n        System.out.println("PI: " + PI);\n    }\n}`,
+                output: `PI: 3.14`
+            },
+            {
+                title: "P10: Nested Interfaces",
+                aim: "Demonstrate the concept of a nested interface.",
+                code: `class Uni {\n    interface Dept { void print(); }\n}\nclass CS implements Uni.Dept {\n    public void print() { System.out.println("CS Dept"); }\n}\npublic class Prog10 {\n    public static void main(String[] args) {\n        new CS().print();\n    }\n}`,
+                output: `CS Dept`
+            },
+            {
+                title: "P11: Interface Inheritance",
+                aim: "Demonstrate inheritance between interfaces.",
+                code: `interface Animal { void eat(); }\ninterface Dog extends Animal { void bark(); }\nclass Labrador implements Dog {\n    public void eat() { System.out.print("Eating "); }\n    public void bark() { System.out.print("Barking"); }\n}\npublic class Prog11 {\n    public static void main(String[] args) {\n        Labrador l = new Labrador(); l.eat(); l.bark();\n    }\n}`,
+                output: `Eating Barking`
+            },
+            {
+                title: "P12: Real-World Application Using Interfaces",
+                aim: "Demonstrate real-world application using interfaces.",
+                code: `interface Payment { void pay(int amt); }\nclass UPI implements Payment {\n    public void pay(int amt) { System.out.println("Paid " + amt + " via UPI"); }\n}\npublic class Prog12 {\n    public static void main(String[] args) {\n        new UPI().pay(500);\n    }\n}`,
+                output: `Paid 500 via UPI`
+            }
+        ];
+
+
+        const week10Data = [
+            {
+                title: "P1: Try-Catch — Division by Zero",
+                aim: "Write a Java program to demonstrate exception handling using try and catch by handling division by zero.",
+                code: `public class DivisionException {
+    public static void main(String[] args) {
+        try {
+            int a = 10, b = 0;
+            System.out.println(a / b);
+        } catch (ArithmeticException e) {
+            System.out.println("Cannot divide by zero");
+        }
+    }
+}`,
+                output: `Cannot divide by zero`
+            },
+            {
+                title: "P2: Different Types of Exceptions",
+                aim: "Demonstrate ArithmeticException, ArrayIndexOutOfBoundsException, and NullPointerException.",
+                code: `public class ExceptionTypes {
+    public static void main(String[] args) {
+        try {
+            int a = 10 / 0;
+        } catch (ArithmeticException e) {
+            System.out.println("ArithmeticException");
+        }
+
+        try {
+            int[] a = {1, 2};
+            System.out.println(a[5]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("ArrayIndexOutOfBoundsException");
+        }
+
+        try {
+            String s = null;
+            System.out.println(s.length());
+        } catch (NullPointerException e) {
+            System.out.println("NullPointerException");
+        }
+    }
+}`,
+                output: `ArithmeticException
+ArrayIndexOutOfBoundsException
+NullPointerException`
+            },
+            {
+                title: "P3: Uncaught Exception",
+                aim: "Demonstrate an uncaught exception and observe the default JVM exception message and stack trace.",
+                code: `public class UncaughtException {
+    public static void main(String[] args) {
+        int a = 10 / 0;
+        System.out.println(a);
+    }
+}`,
+                output: `Exception in thread "main" java.lang.ArithmeticException: / by zero`
+            },
+            {
+                title: "P4: Multiple Catch Clauses",
+                aim: "Handle multiple exceptions using multiple catch clauses.",
+                code: `public class MultipleCatch {
+    public static void main(String[] args) {
+        try {
+            int[] a = {1, 2};
+            System.out.println(a[5]);
+        } catch (ArithmeticException e) {
+            System.out.println("Arithmetic Error");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Array Error");
+        }
+    }
+}`,
+                output: `Array Error`
+            },
+            {
+                title: "P5: Throw Statement",
+                aim: "Demonstrate the use of the throw statement to explicitly generate an exception when a condition is violated.",
+                code: `public class ThrowDemo {
+    public static void main(String[] args) {
+        int age = 15;
+
+        if (age < 18) {
+            throw new ArithmeticException("Age is below 18");
+        }
+
+        System.out.println("Eligible");
+    }
+}`,
+                output: `Exception in thread "main" java.lang.ArithmeticException: Age is below 18`
+            },
+            {
+                title: "P6: Throws Keyword",
+                aim: "Demonstrate the use of the throws keyword by propagating an exception to the calling method.",
+                code: `public class ThrowsDemo {
+    static void check() throws Exception {
+        throw new Exception("Exception propagated");
+    }
+
+    public static void main(String[] args) {
+        try {
+            check();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}`,
+                output: `Exception propagated`
+            },
+            {
+                title: "P7: Finally Block",
+                aim: "Demonstrate the use of the finally block for executing statements regardless of whether an exception occurs.",
+                code: `public class FinallyDemo {
+    public static void main(String[] args) {
+        try {
+            int a = 10 / 2;
+            System.out.println("Result: " + a);
+        } catch (ArithmeticException e) {
+            System.out.println("Error");
+        } finally {
+            System.out.println("Finally block executed");
+        }
+    }
+}`,
+                output: `Result: 5
+Finally block executed`
+            },
+            {
+                title: "P8: User-Defined Exception",
+                aim: "Create a user-defined exception by extending the Exception class.",
+                code: `class MyException extends Exception {
+    MyException(String message) {
+        super(message);
+    }
+}
+
+public class CustomException {
+    public static void main(String[] args) {
+        try {
+            throw new MyException("Custom exception occurred");
+        } catch (MyException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}`,
+                output: `Custom exception occurred`
+            },
+            {
+                title: "P9: Student Marks Validation",
+                aim: "Validate a student's marks and throw a custom exception when the marks are outside the valid range.",
+                code: `class InvalidMarksException extends Exception {
+    InvalidMarksException(String msg) {
+        super(msg);
+    }
+}
+
+public class MarksValidation {
+    public static void main(String[] args) {
+        int marks = 105;
+
+        try {
+            if (marks < 0 || marks > 100) {
+                throw new InvalidMarksException("Marks must be between 0 and 100");
+            }
+            System.out.println("Valid marks");
+        } catch (InvalidMarksException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}`,
+                output: `Marks must be between 0 and 100`
+            },
+            {
+                title: "P10: Combined Exception Handling",
+                aim: "Combine try, multiple catch, throw, throws and finally in a single application.",
+                code: `public class CombinedException {
+    static void check(int n) throws Exception {
+        if (n < 0) {
+            throw new Exception("Negative value");
+        }
+    }
+
+    public static void main(String[] args) {
+        try {
+            check(-5);
+            int x = 10 / 0;
+            System.out.println(x);
+        } catch (ArithmeticException e) {
+            System.out.println("ArithmeticException");
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+        } finally {
+            System.out.println("Finally executed");
+        }
+    }
+}`,
+                output: `Exception: Negative value
+Finally executed`
+            }
+        ];
+
+
+        const week11Data = [
+            {
+                title: "P1: Reader and Writer",
+                aim: "Read characters from the keyboard using Reader and display them on the console using Writer.",
+                code: `import java.io.*;
+
+public class ReaderWriterDemo {
+    public static void main(String[] args) throws IOException {
+        Reader r = new InputStreamReader(System.in);
+        Writer w = new OutputStreamWriter(System.out);
+
+        System.out.print("Enter text: ");
+        int ch;
+        while ((ch = r.read()) != '\n') {
+            w.write(ch);
+        }
+        w.flush();
+    }
+}`,
+                output: `Enter text: Hello Java
+Hello Java`
+            },
+            {
+                title: "P2: FileReader",
+                aim: "Read the contents of a text file using FileReader and display them on the console.",
+                code: `import java.io.*;
+
+public class FileReaderDemo {
+    public static void main(String[] args) throws IOException {
+        FileReader fr = new FileReader("input.txt");
+        int ch;
+
+        while ((ch = fr.read()) != -1) {
+            System.out.print((char) ch);
+        }
+
+        fr.close();
+    }
+}`,
+                output: `Contents of input.txt displayed successfully.`
+            },
+            {
+                title: "P3: FileWriter",
+                aim: "Write text into a file using FileWriter.",
+                code: `import java.io.*;
+
+public class FileWriterDemo {
+    public static void main(String[] args) throws IOException {
+        FileWriter fw = new FileWriter("output.txt");
+        fw.write("Java Character Streams");
+        fw.close();
+
+        System.out.println("Data written successfully");
+    }
+}`,
+                output: `Data written successfully`
+            },
+            {
+                title: "P4: Copy Text File",
+                aim: "Copy the contents of one text file into another using FileReader and FileWriter.",
+                code: `import java.io.*;
+
+public class CopyTextFile {
+    public static void main(String[] args) throws IOException {
+        FileReader fr = new FileReader("input.txt");
+        FileWriter fw = new FileWriter("copy.txt");
+
+        int ch;
+        while ((ch = fr.read()) != -1) {
+            fw.write(ch);
+        }
+
+        fr.close();
+        fw.close();
+        System.out.println("File copied successfully");
+    }
+}`,
+                output: `File copied successfully`
+            },
+            {
+                title: "P5: Count Characters, Words and Lines",
+                aim: "Count the number of characters, words, and lines in a text file using character streams.",
+                code: `import java.io.*;
+
+public class FileCount {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("input.txt"));
+
+        int chars = 0, words = 0, lines = 0;
+        String line;
+
+        while ((line = br.readLine()) != null) {
+            lines++;
+            chars += line.length();
+            if (!line.trim().isEmpty()) {
+                words += line.trim().split("\\\\s+").length;
+            }
+        }
+
+        br.close();
+        System.out.println("Characters: " + chars);
+        System.out.println("Words: " + words);
+        System.out.println("Lines: " + lines);
+    }
+}`,
+                output: `Characters: 25
+Words: 5
+Lines: 2`
+            },
+            {
+                title: "P6: Main Thread",
+                aim: "Demonstrate the Main Thread and display its name, priority, and state.",
+                code: `public class MainThreadDemo {
+    public static void main(String[] args) {
+        Thread t = Thread.currentThread();
+
+        System.out.println("Name: " + t.getName());
+        System.out.println("Priority: " + t.getPriority());
+        System.out.println("State: " + t.getState());
+    }
+}`,
+                output: `Name: main
+Priority: 5
+State: RUNNABLE`
+            },
+            {
+                title: "P7: Thread Class",
+                aim: "Create a thread by extending the Thread class.",
+                code: `class MyThread extends Thread {
+    public void run() {
+        System.out.println("Thread is running");
+    }
+}
+
+public class ThreadClassDemo {
+    public static void main(String[] args) throws InterruptedException {
+        MyThread t = new MyThread();
+        t.start();
+        t.join();
+    }
+}`,
+                output: `Thread is running`
+            },
+            {
+                title: "P8: Runnable Interface",
+                aim: "Create a thread by implementing the Runnable interface.",
+                code: `class MyTask implements Runnable {
+    public void run() {
+        System.out.println("Runnable thread is running");
+    }
+}
+
+public class RunnableDemo {
+    public static void main(String[] args) throws InterruptedException {
+        Thread t = new Thread(new MyTask());
+        t.start();
+        t.join();
+    }
+}`,
+                output: `Runnable thread is running`
+            },
+            {
+                title: "P9: Multiple Threads",
+                aim: "Create multiple threads and demonstrate their concurrent execution.",
+                code: `class Task extends Thread {
+    private String name;
+
+    Task(String name) {
+        this.name = name;
+    }
+
+    public void run() {
+        System.out.println(name + " is running");
+    }
+}
+
+public class MultipleThreads {
+    public static void main(String[] args) {
+        new Task("Thread-1").start();
+        new Task("Thread-2").start();
+        new Task("Thread-3").start();
+    }
+}`,
+                output: `Thread-1 is running
+Thread-2 is running
+Thread-3 is running`
+            },
+            {
+                title: "P10: isAlive()",
+                aim: "Demonstrate the use of isAlive() method to check whether a thread is running.",
+                code: `class TestThread extends Thread {
+    public void run() {
+        System.out.println("Thread running");
+    }
+}
+
+public class IsAliveDemo {
+    public static void main(String[] args) throws InterruptedException {
+        TestThread t = new TestThread();
+
+        System.out.println("Before start: " + t.isAlive());
+        t.start();
+        t.join();
+        System.out.println("After completion: " + t.isAlive());
+    }
+}`,
+                output: `Before start: false
+Thread running
+After completion: false`
+            },
+            {
+                title: "P11: join() Method",
+                aim: "Demonstrate the use of join() method to make one thread wait for another thread to complete.",
+                code: `class Worker extends Thread {
+    public void run() {
+        System.out.println("Worker completed");
+    }
+}
+
+public class JoinDemo {
+    public static void main(String[] args) throws InterruptedException {
+        Worker t = new Worker();
+        t.start();
+        t.join();
+        System.out.println("Main continues");
+    }
+}`,
+                output: `Worker completed
+Main continues`
+            },
+            {
+                title: "P12: isAlive() and join()",
+                aim: "Create multiple threads and use isAlive() and join() to control their execution order.",
+                code: `class Job extends Thread {
+    public void run() {
+        System.out.println(getName() + " completed");
+    }
+}
+
+public class ThreadControl {
+    public static void main(String[] args) throws InterruptedException {
+        Job t1 = new Job();
+        Job t2 = new Job();
+
+        t1.start();
+        System.out.println("t1 alive: " + t1.isAlive());
+
+        t1.join();
+        t2.start();
+        t2.join();
+
+        System.out.println("Both threads completed");
+    }
+}`,
+                output: `t1 alive: true
+Thread-0 completed
+Thread-1 completed
+Both threads completed`
+            }
+        ];
+
+
+        const week12Data = [
+            {
+                title: "P1: Thread Priorities",
+                aim: "Create multiple threads and demonstrate different thread priorities using MIN_PRIORITY, NORM_PRIORITY, and MAX_PRIORITY.",
+                code: `class PriorityTask extends Thread {
+    PriorityTask(String name, int priority) {
+        super(name);
+        setPriority(priority);
+    }
+
+    public void run() {
+        System.out.println(getName() + " Priority: " + getPriority());
+    }
+}
+
+public class ThreadPriorityDemo {
+    public static void main(String[] args) {
+        new PriorityTask("Low", Thread.MIN_PRIORITY).start();
+        new PriorityTask("Normal", Thread.NORM_PRIORITY).start();
+        new PriorityTask("High", Thread.MAX_PRIORITY).start();
+    }
+}`,
+                output: `Low Priority: 1
+Normal Priority: 5
+High Priority: 10`
+            },
+            {
+                title: "P2: Three Threads with Different Priorities",
+                aim: "Create three threads with different priorities and observe their execution order.",
+                code: `class PriorityThread extends Thread {
+    PriorityThread(String name, int priority) {
+        super(name);
+        setPriority(priority);
+    }
+
+    public void run() {
+        System.out.println(getName() + " executing");
+    }
+}
+
+public class PriorityOrder {
+    public static void main(String[] args) {
+        new PriorityThread("Thread-A", 3).start();
+        new PriorityThread("Thread-B", 5).start();
+        new PriorityThread("Thread-C", 8).start();
+    }
+}`,
+                output: `Thread-A executing
+Thread-B executing
+Thread-C executing`
+            },
+            {
+                title: "P3: Synchronized Method",
+                aim: "Demonstrate synchronization using a synchronized method for accessing a shared counter.",
+                code: `class Counter {
+    int count = 0;
+
+    synchronized void increment() {
+        count++;
+    }
+}
+
+public class SyncMethodDemo {
+    public static void main(String[] args) throws InterruptedException {
+        Counter c = new Counter();
+
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) c.increment();
+        });
+
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) c.increment();
+        });
+
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+
+        System.out.println("Counter: " + c.count);
+    }
+}`,
+                output: `Counter: 2000`
+            },
+            {
+                title: "P4: Synchronized Block",
+                aim: "Demonstrate synchronization using a synchronized block.",
+                code: `class Counter {
+    int count = 0;
+
+    void increment() {
+        synchronized (this) {
+            count++;
+        }
+    }
+}
+
+public class SyncBlockDemo {
+    public static void main(String[] args) throws InterruptedException {
+        Counter c = new Counter();
+
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) c.increment();
+        });
+
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) c.increment();
+        });
+
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+
+        System.out.println("Counter: " + c.count);
+    }
+}`,
+                output: `Counter: 2000`
+            },
+            {
+                title: "P5: Race Condition and Synchronization",
+                aim: "Demonstrate a race condition and eliminate it using synchronization.",
+                code: `class SafeCounter {
+    private int count = 0;
+
+    synchronized void increment() {
+        count++;
+    }
+
+    int getCount() {
+        return count;
+    }
+}
+
+public class RaceConditionDemo {
+    public static void main(String[] args) throws InterruptedException {
+        SafeCounter c = new SafeCounter();
+
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) c.increment();
+        });
+
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) c.increment();
+        });
+
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+
+        System.out.println("Final count: " + c.getCount());
+    }
+}`,
+                output: `Final count: 2000`
+            },
+            {
+                title: "P6: Synchronized Ticket Booking",
+                aim: "Implement a synchronized ticket-booking system where multiple threads attempt to book tickets simultaneously.",
+                code: `class TicketCounter {
+    private int tickets = 5;
+
+    synchronized void book(String name) {
+        if (tickets > 0) {
+            System.out.println(name + " booked a ticket");
+            tickets--;
+        } else {
+            System.out.println(name + ": No tickets available");
+        }
+    }
+}
+
+public class TicketBooking {
+    public static void main(String[] args) throws InterruptedException {
+        TicketCounter tc = new TicketCounter();
+
+        Thread t1 = new Thread(() -> tc.book("User 1"));
+        Thread t2 = new Thread(() -> tc.book("User 2"));
+        Thread t3 = new Thread(() -> tc.book("User 3"));
+
+        t1.start();
+        t2.start();
+        t3.start();
+
+        t1.join();
+        t2.join();
+        t3.join();
+    }
+}`,
+                output: `User 1 booked a ticket
+User 2 booked a ticket
+User 3 booked a ticket`
+            },
+            {
+                title: "P7: Lambda Functional Interface — Arithmetic",
+                aim: "Introduce lambda expressions by implementing a functional interface for addition, subtraction, multiplication, and division.",
+                code: `interface Operation {
+    int calculate(int a, int b);
+}
+
+public class LambdaArithmetic {
+    public static void main(String[] args) {
+        Operation add = (a, b) -> a + b;
+        Operation sub = (a, b) -> a - b;
+        Operation mul = (a, b) -> a * b;
+        Operation div = (a, b) -> a / b;
+
+        System.out.println("Add: " + add.calculate(10, 5));
+        System.out.println("Sub: " + sub.calculate(10, 5));
+        System.out.println("Mul: " + mul.calculate(10, 5));
+        System.out.println("Div: " + div.calculate(10, 5));
+    }
+}`,
+                output: `Add: 15
+Sub: 5
+Mul: 50
+Div: 2`
+            },
+            {
+                title: "P8: Lambda with Parameters",
+                aim: "Demonstrate a lambda expression with a single parameter and multiple parameters.",
+                code: `interface Single {
+    int square(int x);
+}
+
+interface Multiple {
+    int add(int a, int b);
+}
+
+public class LambdaParameters {
+    public static void main(String[] args) {
+        Single s = x -> x * x;
+        Multiple m = (a, b) -> a + b;
+
+        System.out.println("Square: " + s.square(5));
+        System.out.println("Sum: " + m.add(10, 20));
+    }
+}`,
+                output: `Square: 25
+Sum: 30`
+            },
+            {
+                title: "P9: Block Lambda Expression",
+                aim: "Demonstrate a block lambda expression containing multiple statements.",
+                code: `interface Message {
+    void show(String text);
+}
+
+public class BlockLambda {
+    public static void main(String[] args) {
+        Message m = (text) -> {
+            String result = text.toUpperCase();
+            System.out.println("Message: " + result);
+        };
+
+        m.show("hello java");
+    }
+}`,
+                output: `Message: HELLO JAVA`
+            },
+            {
+                title: "P10: Block Lambda — Largest of Two",
+                aim: "Use a block lambda expression to find the largest of two numbers and return the result.",
+                code: `interface Largest {
+    int find(int a, int b);
+}
+
+public class LargestLambda {
+    public static void main(String[] args) {
+        Largest l = (a, b) -> {
+            if (a > b)
+                return a;
+            return b;
+        };
+
+        System.out.println("Largest: " + l.find(25, 40));
+    }
+}`,
+                output: `Largest: 40`
+            },
+            {
+                title: "P11: Generic Functional Interface",
+                aim: "Create a generic functional interface and implement it using lambda expressions for different data types.",
+                code: `interface Display<T> {
+    void show(T value);
+}
+
+public class GenericLambda {
+    public static void main(String[] args) {
+        Display<Integer> d1 = x -> System.out.println("Integer: " + x);
+        Display<String> d2 = x -> System.out.println("String: " + x);
+
+        d1.show(100);
+        d2.show("Java");
+    }
+}`,
+                output: `Integer: 100
+String: Java`
+            },
+            {
+                title: "P12: Generic Interface with Two Values",
+                aim: "Create a generic functional interface that accepts two values and performs an operation using a lambda expression.",
+                code: `interface Operation<T> {
+    T apply(T a, T b);
+}
+
+public class GenericOperation {
+    public static void main(String[] args) {
+        Operation<Integer> add = (a, b) -> a + b;
+        Operation<Double> multiply = (a, b) -> a * b;
+
+        System.out.println("Integer sum: " + add.apply(10, 20));
+        System.out.println("Double product: " + multiply.apply(2.5, 4.0));
+    }
+}`,
+                output: `Integer sum: 30
+Double product: 10.0`
+            },
+            {
+                title: "P13: Lambda with ArrayList",
+                aim: "Use lambda expressions to display and filter elements of an ArrayList.",
+                code: `import java.util.*;
+
+public class LambdaArrayList {
+    public static void main(String[] args) {
+        ArrayList<Integer> list =
+            new ArrayList<>(Arrays.asList(10, 15, 20, 25, 30));
+
+        System.out.println("All elements:");
+        list.forEach(x -> System.out.print(x + " "));
+
+        System.out.println("\\nEven elements:");
+        list.removeIf(x -> x % 2 != 0);
+        list.forEach(x -> System.out.print(x + " "));
+    }
+}`,
+                output: `All elements:
+10 15 20 25 30
+Even elements:
+10 20 30`
+            },
+            {
+                title: "P14: Sorting with Lambda",
+                aim: "Sort a list of integers and strings using lambda expressions.",
+                code: `import java.util.*;
+
+public class LambdaSort {
+    public static void main(String[] args) {
+        List<Integer> nums =
+            new ArrayList<>(Arrays.asList(5, 2, 8, 1));
+        List<String> names =
+            new ArrayList<>(Arrays.asList("Java", "C", "Python"));
+
+        nums.sort((a, b) -> a - b);
+        names.sort((a, b) -> a.compareTo(b));
+
+        System.out.println(nums);
+        System.out.println(names);
+    }
+}`,
+                output: `[1, 2, 5, 8]
+[C, Java, Python]`
+            },
+            {
+                title: "P15: Thread Using Lambda Expression",
+                aim: "Create and execute a thread using a lambda expression.",
+                code: `public class LambdaThread {
+    public static void main(String[] args) throws InterruptedException {
+        Thread t = new Thread(() ->
+            System.out.println("Thread created using lambda"));
+
+        t.start();
+        t.join();
+    }
+}`,
+                output: `Thread created using lambda`
+            }
+        ];
+
+        const allData = {
+            week3: week3Data,
+            week6: week6Data,
+            week7: week7Data,
+            week8: week8Data,
+            week9: week9Data,
+            week10: week10Data,
+            week11: week11Data,
+            week12: week12Data
+        };
+
+        // Utility to safely escape HTML to prevent parsing issues
+        function escapeHTML(str) {
+            return str.replace(/&/g, "&amp;")
+                      .replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;")
+                      .replace(/"/g, "&quot;")
+                      .replace(/'/g, "&#039;");
+        }
+
+        // Render standard program block UI
+        function buildProgramHTML(prog, programNumber = null) {
+            const uniqueId = 'code-' + Math.random().toString(36).substr(2, 9);
+            const escapedCode = escapeHTML(prog.code);
+            const escapedOutput = escapeHTML(prog.output).replace(/\\n/g, "<br>");
+            
+            return `
+                <div class="border border-gray-200 rounded-lg p-6 bg-white mb-8 shadow-sm">
+                    <h2 class="text-base font-semibold text-gray-900 mb-1">${programNumber ? `<span class="program-number">P${programNumber}</span>` : ""}${escapeHTML(prog.title).replace(/^P\d+:\s*/, "")}</h2>
+                    <p class="text-sm text-gray-500 mb-5 pb-5 border-b border-gray-100">${escapeHTML(prog.aim)}</p>
+                    
+                    <div class="flex justify-between items-end mb-2">
+                        <span class="text-[11px] uppercase tracking-wider text-gray-400 font-bold">Java Source Code</span>
+                        <button onclick="copyToClipboard('${uniqueId}')" class="text-xs bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 px-3 py-1.5 rounded-md transition-all flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-gray-200">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            Copy Code
+                        </button>
+                    </div>
+                    
+                    <div class="mb-5 rounded-md overflow-hidden">
+                        <pre><code id="${uniqueId}" class="language-java">${escapedCode}</code></pre>
+                    </div>
+                    
+                    <div>
+                        <span class="text-[11px] uppercase tracking-wider text-gray-400 font-bold block mb-2">Terminal Output</span>
+                        <div class="output-container">
+                            ${escapedOutput}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        const weekTitles = {
+            week3: "Week 3: Basics & Flow",
+            week6: "Week 6: Classes & Objects",
+            week7: "Week 7: Strings & Inheritance",
+            week8: "Week 8: Polymorphism",
+            week9: "Week 9: Packages & Interfaces",
+            week10: "Week 10: Exception Handling",
+            week11: "Week 11: Character Streams & Multithreading",
+            week12: "Week 12: Multithreading & Lambda Expressions"
+        };
+
+        const weekDescriptions = {
+            week3: "Fundamentals, variables, operators, type conversion and control flow.",
+            week6: "Classes, objects, constructors, methods, static members and nested classes.",
+            week7: "String handling, StringBuffer, tokenization and inheritance fundamentals.",
+            week8: "Inheritance, overriding, dynamic dispatch and practical polymorphism.",
+            week9: "Packages, access control, interfaces and interface-based polymorphism.",
+            week10: "Exception handling experiments covering try-catch, throw, throws, finally and custom exceptions.",
+            week11: "Character stream operations and core multithreading experiments.",
+            week12: "Thread priorities, synchronization, race conditions and lambda expressions."
+        };
+
+        function getWeekTitle(target) {
+            return weekTitles[target] || (target.replace('week', 'Week ') + ": Practicals");
+        }
+
+        function getWeekDescription(target) {
+            return weekDescriptions[target] || "Source codes and terminal outputs for assigned laboratory tasks.";
+        }
+
+        // Render requested page content
+        function loadContent(target) {
+            const container = document.getElementById('content-container');
+            
+            if (htmlPages[target]) {
+                container.innerHTML = htmlPages[target];
+            } else if (allData[target]) {
+                let html = `
+                    <div class="week-title-card">
+                        <div class="eyebrow">Java Programming Laboratory • ${target.replace('week', 'Week ')}</div>
+                        <h1>${getWeekTitle(target)}</h1>
+                        <p>${getWeekDescription(target)}</p>
+                    </div>
+                `;
+                allData[target].forEach((prog, index) => {
+                    html += buildProgramHTML(prog, index + 1);
+                });
+                container.innerHTML = html;
+            }
+
+            // Syntax Highlighting for newly injected DOM
+            if (window.Prism) {
+                Prism.highlightAllUnder(container);
+            }
+            
+            // Scroll to top
+            document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function copyToClipboard(elementId) {
+            const codeElement = document.getElementById(elementId);
+            const textToCopy = codeElement.innerText;
+            
+            // Fallback clipboard method for iframe safety
+            const textarea = document.createElement("textarea");
+            textarea.value = textToCopy;
+            textarea.style.position = 'fixed';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast();
+            } catch (err) {
+                console.error('Copy failed', err);
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('opacity-0', 'translate-y-2', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
+            }, 2500);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadContent('home');
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    e.currentTarget.classList.add('active');
+                    
+                    const target = e.currentTarget.getAttribute('data-target');
+                    loadContent(target);
+                    
+                    // Auto-close sidebar on mobile
+                    if (window.innerWidth < 1024) {
+                        sidebar.classList.add('-translate-x-full');
+                        overlay.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Mobile Handlers
+            mobileBtn.addEventListener('click', () => {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            });
+
+            overlay.addEventListener('click', () => {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
